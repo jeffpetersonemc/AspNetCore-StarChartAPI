@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StarChart.Data;
+using StarChart.Models;
 
 namespace StarChart.Controllers
 {
@@ -23,11 +24,11 @@ namespace StarChart.Controllers
         {
             var celestialObject = _context.CelestialObjects.Find(id);
             if (celestialObject == null)
-            return NotFound();
+                return NotFound();
 
             celestialObject.Satellites = _context.CelestialObjects.Where(e => e.OrbitedObjectId == id).ToList();
             return Ok(celestialObject);
-           
+
         }
 
         [HttpGet("{name}")]
@@ -35,9 +36,9 @@ namespace StarChart.Controllers
         {
             var celestialObjects = _context.CelestialObjects.Where(e => e.Name == name).ToList();
             if (!celestialObjects.Any())
-            return NotFound();
+                return NotFound();
 
-            foreach(var celestialObject in celestialObjects)
+            foreach (var celestialObject in celestialObjects)
             {
                 celestialObject.Satellites = _context.CelestialObjects.Where(e => e.OrbitedObjectId == celestialObject.Id).ToList();
             }
@@ -53,6 +54,30 @@ namespace StarChart.Controllers
                 celestialObject.Satellites = _context.CelestialObjects.Where(e => e.OrbitedObjectId == celestialObject.Id).ToList();
             }
             return Ok(celestialObjects);
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody]CelestialObject celestialObject)
+        {
+            return CreatedAtRoute("GetById", new CelestialObject { });
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, CelestialObject celestialObject)
+        {
+            return NotFound();
+        }
+
+        [HttpPatch("{id}/{name}")]
+        public IActionResult RenameObject(int id, string name)
+        {
+            return NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            return NotFound();
         }
     }
 }
